@@ -93,14 +93,22 @@ const userLogin =(req,res,next)=>{
 
 
 
+app.get("/reel", wrapAsync(async (req, res, next) => {
+  try {
+    const reels = await Film.find({});
+    res.json({ reels }); // ✅ Fix: Always send JSON
+  } catch (err) {
+    next(err);
+  }
+}));
 
 
-app.get("/reel", wrapAsync(async (req,res,next)=>{
+// app.get("/reel", wrapAsync(async (req,res,next)=>{
     
-        const reels = await Film.find({});
-        res.render("reel/index",{reels})
+//         const reels = await Film.find({});
+//         res.render("reel/index",{reels})
     
-}))
+// }))
 
 
 app.get("/reel/new",(req,res)=>{
@@ -249,10 +257,16 @@ app.use((err, req, res, next) => {
     }
     res.status(status).render("error", { err });
   });
+
+
+
+
+  module.exports = app;
+
   
-app.listen(3000,()=>{
-    console.log("APP LISTENING ON 3000")
-})
+// app.listen(3000,()=>{
+//     console.log("APP LISTENING ON 3000")
+// })
 
 
 
