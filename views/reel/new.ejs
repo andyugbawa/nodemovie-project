@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .invalid-input {
+            border: 2px solid red;
+            background-color: #ffe6e6;
+        }
+        .valid-input {
+            border: 2px solid green;
+            background-color: #e6ffe6;
+        }
+        .container{
+            display: flex;
+            justify-content: center;
+        }
+        .movie-content{
+            width:280px;
+            height: 450px;
+            border: 2px solid gray;
+            padding: 10px 0 10px 60px;
+        }
+        .title{
+            padding: 0px 0 10px 0;  
+        }
+        .genre{
+            padding: 0px 0 10px 0;    
+        }
+        .year{
+            padding: 0px 0 10px 0;  
+        }
+        .show{
+            padding: 20px 0 0 0;
+        }
+        .submit{
+            padding: 20px 0 0 0; 
+        }
+ 
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="movie-content">
+            <h1>Add New Movies</h1>
+            
+
+            <form action="/reel" method="POST" enctype="multipart/form-data">
+                <div class="title">
+
+                    <input type="text" name="title" placeholder="Title" required />
+                </div>
+                <div class="genre">
+                    <input type="text" name="genre" placeholder="Genre" required />
+
+                </div>
+                <div class="year">
+                    <input type="number" name="year" placeholder="Year" required />
+
+                </div>
+                <div class="show">
+                    <input type="file" name="image" multiple />
+
+                </div>
+                <div class="submit">
+                    <button type="submit">Submit</button>
+
+                </div>
+              </form>
+              
+
+
+<!--             
+            <form action="/reel" method="POST" novalidate id="movieForm" enctype="multipart/form-data">
+                <label for="Title">Title</label>
+                <div class="title">
+                    <input type="text" name="reel[title]" placeholder="Title" required>
+                </div>
+                <label for="genre">Genre</label>
+                <div class="genre">
+                    <input type="text" name="reel[genre]" placeholder="Genre" required>
+                </div>
+                <label for="year">Year</label>
+                <div class="year">
+                    <input type="number" name="reel[year]" placeholder="Year" required min="1888">
+        
+                </div>
+                <label for="image">Images:</label>
+                <input type="file" name="image" id="image" multiple required>
+                <button>Submit</button>
+                
+            </form> -->
+    
+        </div>
+
+    </div>
+
+    <script>
+        (function () {
+            'use strict'
+
+            const form = document.getElementById('movieForm');
+            const inputs = form.querySelectorAll('input');
+
+            form.addEventListener('submit', function (event) {
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        // Highlight invalid input
+                        input.classList.add('invalid-input');
+                        input.classList.remove('valid-input');
+                        isValid = false;
+                    } else {
+                        // Highlight valid input
+                        input.classList.remove('invalid-input');
+                        input.classList.add('valid-input');
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault(); // Prevent form submission if invalid
+                }
+            });
+
+            // Optional: Real-time validation on input
+            inputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    if (input.value.trim()) {
+                        input.classList.remove('invalid-input');
+                        input.classList.add('valid-input');
+                    } else {
+                        input.classList.remove('valid-input');
+                        input.classList.add('invalid-input');
+                    }
+                });
+            });
+        })();
+        
+    </script>
+    <script src="/path-to-your-js/fileValidation.js"></script>
+
+</body>
+</html>

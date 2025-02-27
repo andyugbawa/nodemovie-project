@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Index Page</title>
+</head>
+<body>
+
+
+
+    <nav class="nav-container">
+        <div class="header">
+            <h1>MOVIE</h1>
+
+        </div>
+        <div class="reg-log">
+            <a href="/register">Register</a>
+            <form action="/logout" method="POST">
+                <button type="submit">logout</button>
+            </form>
+        </div>
+        
+    </nav>
+     
+
+
+       <%= messages %>
+
+       <div class="card-container">
+
+           <div class="card">
+              <img src="/image/moana2.jpeg" alt="movies" class="image">
+           </div>
+           <div class="card1">
+            <img src="/image/red one.jpeg" alt="movies" class="image">
+           </div>
+           <div class="card2">
+            <img src="/image/taipei.jpeg" alt="movies" class="image">
+           </div>
+           <div class="card3">
+            <img src="/image/kraven.jpeg" alt="movies" class="image">
+           </div>
+       </div>
+
+       <div class="card-container1">
+
+           <div class="card">
+            <img src="/image/hounds of war.jpeg" alt="movies" class="image">
+           </div>
+           <div class="card1">
+            <img src="/image/captain america.jpeg" alt="movies" class="image">
+           </div>
+           <div class="card2">
+            <img src="/image/deadpool and wolverine.jpeg" alt="movies" class="image">
+           </div>
+           <div class="card3">
+            <img src="/image/darkness of a man.jpeg" alt="movies" class="image">
+           </div>
+       </div>
+
+
+
+
+    <h1>ALL MOVIES</h1>
+       <!-- <%= messages %> -->
+    <ul>
+        <% for(let reel of reels ){ %>
+            <li><a href="/reel/<%= reel._id %>"><%= reel.title %></a></li>
+            <% } %>
+    </ul> 
+
+    <a href="/reel/new">Request for Movies</a>
+
+
+    <footer class="footer-container">
+        <div class="container">
+            <span class="text-muted"> &copy;Movies 2025</span>
+        </div>
+    </footer>
+   
+
+</body>
+</html>
+
+     <!-- <form action="/logout" method="POST">
+        <button type="submit">logout</button>
+    </form> -->
+
+
+     <!-- ✅ Display Flash Messages
+        
+     <% if (messages && messages.length > 0) { %>
+        <div style="color: green; font-weight: bold;">
+            <%= messages %>
+        </div>
+    <% } %>
+
+    <% if (error && error.length > 0) { %>
+        <div style="color: red; font-weight: bold;">
+            <%= error %>
+        </div>
+    <% } %> -->
+
+   

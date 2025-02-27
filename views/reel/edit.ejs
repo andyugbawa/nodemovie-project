@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .invalid-input {
+            border: 2px solid red;
+            background-color: #ffe6e6;
+        }
+        .valid-input {
+            border: 2px solid green;
+            background-color: #e6ffe6;
+        }
+    </style>
+
+</head>
+<body>
+    <%= messages %>
+    <h1>Edit New Movies</h1>
+        <form action="/reel/<%= reel._id%>?_method=PUT" method="POST" novalidate id="movieForm">
+        <label for="Title">Title</label>
+        <input type="text" name="title" placeholder="Title" value="<%= reel.title %>">
+
+        <label for="genre">Genre</label>
+        <input type="text" name="genre" placeholder="Genre" value="<%= reel.genre %>">
+
+        <label for="year">Year</label>
+        <input type="number" name="year" placeholder="year" value="<%= reel.year %>">
+        <button>Submit</button>
+    </form>
+    
+      
+    <script>
+        (function () {
+            'use strict'
+
+            const form = document.getElementById('movieForm');
+            const inputs = form.querySelectorAll('input');
+
+            form.addEventListener('submit', function (event) {
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        input.classList.add('invalid-input');
+                        input.classList.remove('valid-input');
+                        isValid = false;
+                    } else {
+                        
+                        input.classList.remove('invalid-input');
+                        input.classList.add('valid-input');
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault(); 
+                }
+            });
+
+           
+            inputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    if (input.value.trim()) {
+                        input.classList.remove('invalid-input');
+                        input.classList.add('valid-input');
+                    } else {
+                        input.classList.remove('valid-input');
+                        input.classList.add('invalid-input');
+                    }
+                });
+            });
+        })();
+    </script>
+     
+
+</body>
+</html>
+
+
+
+
+
+

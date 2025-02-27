@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container{
+            margin: 50px 0;
+           display: flex;
+           justify-content: center;
+           padding: 0 10px 10px 0;
+        }
+        .register-form{
+            width: 290px;
+            height: 450px;
+            border: 3px solid red;
+            padding: 0 0 0 60px;
+
+        }
+
+        form{
+            padding: 0 10px 10px 0;
+        }
+        label{
+            padding: 0 30px 10px 0;
+        }
+        .user-input{
+            padding: 0 10px 10px 0px;  
+        }
+        .username{
+            padding: 0 10px 10px 0px;
+            
+        }
+        .user-email{
+            padding: 0 10px 10px 0px;    
+        }
+        .user-password{
+            padding: 0 10px 10px 0px;   
+        }
+        input{
+            padding: 5px 8px 8px 40px;
+        }
+
+    </style>
+</head>
+<body>
+
+
+    <div class="container">
+        <div class="register-form">
+            <h1>REGISTER</h1>
+            <%= messages %>
+         <form action="/register" method="POST">
+             <div class="username">
+                <label for="usernam">Username</label>
+                <div class="user-input">
+                    <input type="text" name="username" id="username" placeholder="username" required>
+                </div>
+             </div>
+             
+             <div class="email">
+                 <label for="email">Email</label>
+                 <div class="user-email">
+                     <input type="text" name="email" id="email" placeholder="email" required>
+                 </div>
+             </div>
+     
+             <div class="password">
+                 <label for="password">Password</label>
+                 <div class="user-password">
+                     <input type="password" name="password" id="password" placeholder="password" required>
+
+                 </div>
+             </div>
+             <button>Submit</button>
+         </form>
+        </div>
+
+    </div>
+
+
+</body>
+</html>

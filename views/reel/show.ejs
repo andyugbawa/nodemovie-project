@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= reel.title %></title>
+    <style>
+        .btn{
+            background-color: red;
+            padding: 10px 30px 10px 30px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            border-radius: 20px;
+            border: 1px solid white
+        }
+        .main{
+            width:150px;
+            height: 30px;
+            background-color: brown;
+            padding: 10px 0 0 0;
+            color:white;
+            font-size: 15px;
+            text-decoration: none;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .edit{
+            width:150px;
+            height: 30px;
+            padding: 10px 0 0 0;
+            background-color: green;
+            color:white;
+            font-size: 15px;
+            text-decoration: none;
+            border-radius: 20px;
+            text-align: center; 
+        }
+
+        .direction{
+            display: flex;
+            justify-content: space-evenly;
+            margin: 40px 0 0 0;
+
+        }
+        .movie-container{
+           display: flex;
+           justify-content: center;
+        }
+
+        .genre{
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .year{
+            font-size: 18px;
+            font-weight: bold;
+
+        }
+
+        .messages{
+            padding: 30px 0 0 40px;
+        }
+     
+    </style>
+</head>
+<body>
+    
+
+    <div class="direction">
+        <a class="main"href="/reel">Go back to main page</a>
+        <a class="edit"href="/reel/<%= reel._id %>/edit">Go to Edit</a>
+        <form action="/reel/<%= reel._id %>?_method=DELETE" method="POST">
+            <button class="btn">DELETE</button>
+        </form>
+
+    </div>
+
+    <div class="movie-container">
+        <div class="movie-poster">
+            <div class="messages">
+                <%= messages %>
+
+            </div>
+        <h1><%= reel.title %></h1>
+    
+        <% if (reel.images.length > 0) { %>
+            <% reel.images.forEach((image) => { %>
+                <img src="/uploads/<%= image.filename %>" alt="<%= image.filename %>" width="300">
+    
+            <% }) %>
+            <% } else { %>
+            <p>No images uploaded.</p>
+            <% } %>
+        <ul>
+            <li class="genre">Genre:<%= reel.genre %></li>
+            <li class="year">Year:<%= reel.year %></li>
+            
+        </ul>
+      </div>
+
+    </div>
+
+
+  
+
+
+    <!-- <a class="main"href="/reel">Go back to main page</a>
+    <a href="/reel/<%= reel._id %>/edit">Go to Edit</a>
+    <form action="/reel/<%= reel._id %>?_method=DELETE" method="POST">
+        <button class="btn">DELETE</button>
+    </form> -->
+</body>
+</html>
+
+
+
