@@ -113,26 +113,20 @@ app.get("/reel/new",(req,res)=>{
 })
 
 
-
-
-
-
-
 app.post("/reel", upload.array("image"), async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
+    console.log("Uploaded Files:", req.files);
+
     const { title, genre, year } = req.body;
     if (!title || !genre || !year) {
-       res.status(400).send("Title, genre, and year are required fields.");
-       return;
+      return res.status(400).send("Title, genre, and year are required fields.");
     }
 
-   
     if (!req.files || req.files.length === 0) {
-       res.status(400).send("No images uploaded.");
-       return;
+      return res.status(400).send("No images uploaded."); 
     }
 
-    
     const newReel = new Film({
       title,
       genre,
@@ -143,28 +137,14 @@ app.post("/reel", upload.array("image"), async (req, res) => {
       })),
     });
 
-    
     await newReel.save();
     req.flash("success", "Successfully made a new Film");
-    res.redirect(`/reel/${newReel._id}`);
+    return res.redirect(`/reel/${newReel._id}`); 
   } catch (err) {
     console.error("Error creating film:", err.message);
-    // res.status(500).send("An error occurred while creating the film.");
+    return res.status(500).send("An error occurred while creating the film."); 
   }
 });
-
-app.post("/reel", upload.array("image"), async (req, res) => {
-  console.log("Request Body:", req.body);
-  console.log("Uploaded Files:", req.files);
-
-  if (!req.body.title || !req.body.genre || !req.body.year) {
-     res.status(400).send("Title, genre, and year are required fields.");
-     return;
-  }
-
- 
-});
-
 
 app.get("/reel/:id/edit",wrapAsync(async(req,res,next)=>{
     
@@ -197,43 +177,31 @@ app.get("/register",(req,res)=>{
 
 
 app.post("/register", async (req, res) => {
-    try {
-      const { username, email, password } = req.body;
-  
-     
-      const client = new Client({ username, email });
-  
-      
-      const registeredUser = await Client.register(client, password);
-  
-      console.log("Registered User:", registeredUser);
-  
-      req.flash("success", "User registered successfully!");
-    
-      res.redirect("/login");
-    } catch (err) {
-      console.error("Error during registration:", err.message);
-      req.flash("error", "Failed to register user. Please try again.");
-      res.redirect("/login");
-    }
-  });
+  try {
+    const { username, email, password } = req.body;
+    const client = new Client({ username, email });
+    await Client.register(client, password);
+    req.flash("success", "User registered successfully!");
+    return res.redirect("/login"); 
+  } catch (err) {
+    console.error("Error during registration:", err.message);
+    req.flash("error", "Failed to register user. Please try again.");
+    return res.redirect("/login"); 
+  }
+});
 
-
-  
 app.get("/login",(req,res)=>{
     res.render("reel/login")
 })
 
 
 app.post("/login", passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true
-  }), (req, res) => {
-    req.flash("success", "Welcome!");
-    res.redirect("/reel");
-   
-  });
-
+  failureRedirect: "/login",
+  failureFlash: true
+}), (req, res) => {
+  req.flash("success", "Welcome!");
+  return res.redirect("/reel"); 
+});
 
 
   app.post("/logout",(req,res)=>{
@@ -245,29 +213,20 @@ app.post("/login", passport.authenticate("local", {
     res.send("NEW UP")
    })
 
-
-
-
-
-
   app.get("/secret",userLogin,(req,res)=>{
     res.redirect("/reel")
    
   })
 
-app.get("/reel/:id",wrapAsync(async(req,res,next)=>{
-    
-        const {id} = req.params;
-        const reel = await Film.findById(id)
-        if(!reel){
-            throw new AppError("Film not found",404)
-        }
-        res.render("reel/show",{reel})
- 
-}))
-
-
-
+  app.get("/reel/:id", wrapAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const reel = await Film.findById(id);
+    if (!reel) {
+      return next(new AppError("Film not found", 404)); 
+    }
+    res.render("reel/show", { reel });
+  }));
+  
 
 app.delete("/reel/:id",async(req,res)=>{
     const {id} = req.params;
@@ -291,11 +250,6 @@ app.use((err, req, res, next) => {
     res.status(status).render("error", { err });
   });
   
-
-
-
-
-
 app.listen(3000,()=>{
     console.log("APP LISTENING ON 3000")
 })
@@ -305,5 +259,112 @@ app.listen(3000,()=>{
 
 
 
+// app.post("/login", passport.authenticate("local", {
+//     failureRedirect: "/login",
+//     failureFlash: true
+//   }), (req, res) => {
+//     req.flash("success", "Welcome!");
+//     res.redirect("/reel");
+   
+//   });
 
+
+
+
+
+// app.post("/register", async (req, res) => {
+//     try {
+//       const { username, email, password } = req.body;
+  
+     
+//       const client = new Client({ username, email });
+  
+      
+//       const registeredUser = await Client.register(client, password);
+  
+//       console.log("Registered User:", registeredUser);
+  
+//       req.flash("success", "User registered successfully!");
+    
+//       res.redirect("/login");
+//     } catch (err) {
+//       console.error("Error during registration:", err.message);
+//       req.flash("error", "Failed to register user. Please try again.");
+//       res.redirect("/login");
+//     }
+//   });
+
+
+
+
+
+
+
+
+// app.post("/reel", upload.array("image"), async (req, res) => {
+//   console.log("Request Body:", req.body);
+//   console.log("Uploaded Files:", req.files);
+
+//   if (!req.body.title || !req.body.genre || !req.body.year) {
+//      res.status(400).send("Title, genre, and year are required fields.");
+//      return;
+//   }
+
+ 
+// });
+
+
+
+
+
+
+// app.get("/reel/:id",wrapAsync(async(req,res,next)=>{
+    
+//         const {id} = req.params;
+//         const reel = await Film.findById(id)
+//         if(!reel){
+//             throw new AppError("Film not found",404)
+//         }
+//         res.render("reel/show",{reel})
+ 
+// }))
+
+
+
+
+
+// app.post("/reel", upload.array("image"), async (req, res) => {
+//   try {
+//     const { title, genre, year } = req.body;
+//     if (!title || !genre || !year) {
+//        res.status(400).send("Title, genre, and year are required fields.");
+//        return;
+//     }
+
+   
+//     if (!req.files || req.files.length === 0) {
+//        res.status(400).send("No images uploaded.");
+//        return;
+//     }
+
+    
+//     const newReel = new Film({
+//       title,
+//       genre,
+//       year,
+//       images: req.files.map((file) => ({
+//         url: file.path,
+//         filename: file.filename,
+//       })),
+//     });
+
+    
+//     await newReel.save();
+//     req.flash("success", "Successfully made a new Film");
+//     res.redirect(`/reel/${newReel._id}`);
+//   } catch (err) {
+//     console.error("Error creating film:", err.message);
+//     // res.status(500).send("An error occurred while creating the film.");
+//   }
+// });
 
