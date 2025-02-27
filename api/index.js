@@ -7,24 +7,24 @@ if(process.env.NODE_ENV !=="production"){
   const app = express();
   const path = require("path")
   const mongoose = require("mongoose")
-  const AppError = require("./utils/AppError")
-  const wrapAsync =require("./utils/wrapAsync")
-  const {movieSchema} =require("./joiSchema")
-  const Film = require("./models/box")
+  const AppError = require("../utils/AppError")
+  const wrapAsync =require("../utils/wrapAsync")
+  const {movieSchema} =require("../joiSchema")
+  const Film = require("../models/box")
   const bcrypt = require("bcrypt")
   const methodOverride = require("method-override")
-  const User = require("./models/user")
+  const User = require("../models/user")
   const res = require("express/lib/response");
   const { error } = require("console");
   const passport = require("passport")
   const session = require("express-session");
   const flash = require("connect-flash");
   const LocalStrategy = require("passport-local");
-  const Client = require("./models/client")
+  const Client = require("../models/client")
   const multer = require("multer");
   
   const upload = multer({ dest: "uploads/" });
-  const reelRoutes = require("./routes/reelRoutes");
+  const reelRoutes = require("../routes/reelRoutes");
   
   
     
