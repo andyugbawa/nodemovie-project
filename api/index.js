@@ -95,7 +95,7 @@ if (process.env.NODE_ENV !== "production") {
   
 
   
-  app.get("/reel", wrapAsync(async (req,res,next)=>{
+  app.get("/", wrapAsync(async (req,res,next)=>{
       
           const reels = await Film.find({});
           res.render("reel/index",{reels})
