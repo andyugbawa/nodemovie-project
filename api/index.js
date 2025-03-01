@@ -104,21 +104,16 @@ mongoose.connect(MONGO_URI, {
     }
     next();
   };
-  
+
+
+
+  app.get("/reel", wrapAsync(async (req, res) => {
+    const reels = await Film.find({});
+    res.render("reel/index", { reels });
+}));
 
   
-  app.get("/", wrapAsync(async (req,res,next)=>{
-      
-          const reels = await Film.find({});
-          res.render("reel/index",{reels})
-      
-  }))
 
-
-  // app.get("/reel", wrapAsync(async (req, res) => {
-  //   const reels = await Film.find({});
-  //   res.json({ reels });
-  // }));
   
   app.get("/reel/new", (req, res) => {
     if (!req.isAuthenticated()) {
@@ -216,7 +211,10 @@ mongoose.connect(MONGO_URI, {
     }
     res.render("reel/show", { reel });
   }));
-  
+
+
+
+
   app.delete("/reel/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Film.findByIdAndDelete(id);
