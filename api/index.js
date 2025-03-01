@@ -1,6 +1,5 @@
-if (process.env.NODE_ENV !== "production") {
-    require("dotenv").config();
-  }
+  require("dotenv").config();
+
   
   const express = require("express");
   const app = express();
@@ -48,17 +47,30 @@ if (process.env.NODE_ENV !== "production") {
   passport.use(new LocalStrategy(Client.authenticate()));
   passport.serializeUser(Client.serializeUser());
   passport.deserializeUser(Client.deserializeUser());
+
+
+  const MONGO_URI = process.env.VERCEL_ENV === 'production' 
+    ? process.env.MONGO_URI_PROD 
+    : process.env.MONGO_URI_PROD;
+
+
+    
+if (!MONGO_URI) {
+  console.error("❌ MongoDB URI is missing! Check your .env file.");
+  process.exit(1);
+}
   
   
-  mongoose
-    .connect("mongodb://127.0.0.1:27017/filmState")
-    .then(() => {
-      console.log("MONGO CONNECTION OPEN");
-    })
-    .catch((err) => {
-      console.error("MONGO CONNECTION ERROR", err);
-    });
-  
+mongoose.connect(MONGO_URI, {
+  dbName: "filmState",
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log("✅ Connected to MongoDB successfully!"))
+.catch(err => {
+  console.error("❌ MongoDB Connection Error:", err);
+  process.exit(1);
+});
   
   app.use((req, res, next) => {
     res.locals.messages = req.flash("success");
@@ -230,9 +242,9 @@ if (process.env.NODE_ENV !== "production") {
   module.exports = app;
   
   
-  app.listen(3000,()=>{
-      console.log("APP LISTENING ON 3000")
-  })
+  // app.listen(3000,()=>{
+  //     console.log("APP LISTENING ON 3000")
+  // })
 
 
 

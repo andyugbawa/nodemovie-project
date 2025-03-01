@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node api/index.js",
+   
+     "dev": "vercel dev",
     "start": "node api/index.js"
   },
   "keywords": [],
