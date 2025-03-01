@@ -51,7 +51,7 @@
 
   const MONGO_URI = process.env.VERCEL_ENV === 'production' 
     ? process.env.MONGO_URI_PROD 
-    : process.env.MONGO_URI_PROD;
+    : process.env.MONGO_URI_DEV;
 
 
     
@@ -238,13 +238,14 @@ mongoose.connect(MONGO_URI, {
     res.status(status).render("error", { err });
   });
   
+
+
+  const serverless = require("serverless-http");
+   module.exports = serverless(app);
+
   
-  module.exports = app;
   
   
-  // app.listen(3000,()=>{
-  //     console.log("APP LISTENING ON 3000")
-  // })
 
 
 
