@@ -107,7 +107,7 @@ mongoose.connect(MONGO_URI, {
 
 
 
-  app.get("/reel", wrapAsync(async (req, res) => {
+  app.get("/", wrapAsync(async (req, res) => {
     const reels = await Film.find({});
     res.render("reel/index", { reels });
 }));
