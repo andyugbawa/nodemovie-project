@@ -37,11 +37,10 @@
     secret: "thisisakeptsecret",
     resave: false,
     saveUninitialized: false,
+    cookie: { secure: false }
   };
   app.use(session(sessionOptions));
   app.use(flash());
-  
-  
   app.use(passport.initialize());
   app.use(passport.session());
   passport.use(new LocalStrategy(Client.authenticate()));
@@ -85,32 +84,99 @@ mongoose.connect(MONGO_URI, {
   
   app.use("/reel", reelRoutes);
   app.use("/uploads", express.static("uploads"));
+
+
+
+  app.use((req, res, next) => {
+    console.log("Session Data:", req.session);
+    next();
+  });
   
-  
+
+
+
   const validateMovie = (req, res, next) => {
-    const { error } = movieSchema.validate(req.body.reel);
-    if (error) {
-      const msg = error.details.map((el) => el.message).join(",");
-      throw new AppError(msg, 400);
+    try {
+      const { error } = movieSchema.validate(req.body.reel);
+      if (error) {
+        const msg = error.details.map((el) => el.message).join(",");
+        throw new AppError(msg, 400);
+      }
+      next();
+    } catch (err) {
+      next(err);
     }
-    next();
   };
   
+
+
+
+  // ///////////////////////////////////////////////////////////////
+  // Former code
   
+  
+  // const validateMovie = (req, res, next) => {
+  //   const { error } = movieSchema.validate(req.body.reel);
+  //   if (error) {
+  //     const msg = error.details.map((el) => el.message).join(",");
+  //     throw new AppError(msg, 400);
+  //   }
+  //   next();
+  // };
+
+
+
+
   const userLogin = (req, res, next) => {
-    if (!req.session.user_id) {
-      req.flash("error", "You must be logged in");
-      return res.redirect("/login");
+    try {
+      if (!req.session.user_id) {
+        req.flash("error", "You must be logged in");
+        return res.redirect("/login");
+      }
+      next();
+    } catch (err) {
+      next(err);
     }
-    next();
   };
+  
+  
+  
 
 
 
-  app.get("/", wrapAsync(async (req, res) => {
-    const reels = await Film.find({});
-    res.render("reel/index", { reels });
+  // //////////////////////////////////////////////////////////////
+  // Former code
+  
+  // const userLogin = (req, res, next) => {
+  //   if (!req.session.user_id) {
+  //     req.flash("error", "You must be logged in");
+  //     return res.redirect("/login");
+  //   }
+  //   next();
+  // };
+
+
+  app.get("/", wrapAsync(async (req, res, next) => {
+    try {
+        const reels = await Film.find({});
+        res.render("reel/index", { reels });
+    } catch (err) {
+        next(err);
+    }
 }));
+
+
+// ////////////////////////////////////////
+// Former Code
+
+
+//   app.get("/", wrapAsync(async (req, res) => {
+//     const reels = await Film.find({});
+//     res.render("reel/index", { reels });
+// }));
+
+
+
 
   
 
@@ -191,7 +257,7 @@ mongoose.connect(MONGO_URI, {
     failureFlash: true,
   }), (req, res) => {
     req.flash("success", "Welcome!");
-    res.redirect("/reel");
+    res.redirect("/");
   });
   
   app.post("/logout", (req, res) => {
@@ -219,7 +285,7 @@ mongoose.connect(MONGO_URI, {
     const { id } = req.params;
     await Film.findByIdAndDelete(id);
     req.flash("success", "Successfully deleted the movie!");
-    res.redirect("/reel");
+    res.redirect("/");
   }));
   
   
@@ -235,6 +301,12 @@ mongoose.connect(MONGO_URI, {
     }
     res.status(status).render("error", { err });
   });
+
+  app.use((err, req, res, next) => {
+    console.error("Caught an error:", err);
+    res.status(err.status || 500).render("error", { err });
+  });
+  
   
 
 
