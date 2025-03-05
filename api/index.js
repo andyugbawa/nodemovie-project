@@ -158,14 +158,24 @@ mongoose.connect(MONGO_URI, {
   // };
 
 
-  app.get("/", wrapAsync(async (req, res, next) => {
-    try {
-        const reels = await Film.find({});
-        res.render("reel/index", { reels });
-    } catch (err) {
-        next(err);
-    }
+//   app.get("/", wrapAsync(async (req, res, next) => {
+//     try {
+//         const reels = await Film.find({});
+//         res.render("reel/index", { reels });
+//     } catch (err) {
+//         next(err);
+//     }
+// }));
+
+app.get("/", wrapAsync(async (req, res, next) => {
+  try {
+      const reels = await Film.find({});
+      res.render("reel/index", { reels });  // ✅ Render the EJS template and pass data
+  } catch (err) {
+      next(err);
+  }
 }));
+
 
 
 // ////////////////////////////////////////
@@ -256,11 +266,18 @@ mongoose.connect(MONGO_URI, {
     req.flash("success", "User registered successfully!");
     res.redirect("/login");
   }));
+
+
+
+
   
   app.get("/login", (req, res) => {
     res.render("reel/login");
   });
   
+
+
+
   app.post("/login", passport.authenticate("local", {
     failureRedirect: "/login",
     failureFlash: true,
@@ -305,11 +322,19 @@ mongoose.connect(MONGO_URI, {
 
   app.use((err, req, res, next) => {
     const { status = 500, message = "Something went wrong!" } = err;
-    if (err.name === "ValidationError") {
-      req.flash("error", err.message);
-    }
-    res.status(status).render("error", { err });
-  });
+    console.error("Error:", err);
+
+    res.status(status).json({ error: message });  // ✅ Respond with JSON
+});
+
+
+  // app.use((err, req, res, next) => {
+  //   const { status = 500, message = "Something went wrong!" } = err;
+  //   if (err.name === "ValidationError") {
+  //     req.flash("error", err.message);
+  //   }
+  //   res.status(status).render("error", { err });
+  // });
 
   app.use((err, req, res, next) => {
     console.error("Caught an error:", err);
@@ -320,8 +345,8 @@ mongoose.connect(MONGO_URI, {
 
 
   // const serverless = require("serverless-http");
-  //  module.exports = serverless(app);
-
+  // module.exports = serverless(app);
+  
   
   app.listen(3000,()=>{
       console.log("APP LISTENING ON 3000")
