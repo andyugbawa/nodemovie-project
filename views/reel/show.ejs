@@ -97,7 +97,9 @@
     
         <% if (reel.images.length > 0) { %>
             <% reel.images.forEach((image) => { %>
-                <img src="/uploads/<%= image.filename %>" alt="<%= image.filename %>" width="300">
+                <!-- <img src="/uploads/<%= image.filename %>" alt="<%= image.filename %>" width="300"> -->
+                <img src="<%= image.url %>" alt="<%= image.filename %>" width="300">
+
     
             <% }) %>
             <% } else { %>

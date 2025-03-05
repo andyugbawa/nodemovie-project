@@ -19,18 +19,28 @@ const filmSchema = new Schema({
         min: [1888, "The year must be 1888 or later (first film year)"],
         max: [new Date().getFullYear(), "The year must not be in the future"],
     },
+
+
     images: [
-        {
-          url: {
-            type: String,
-            required: true,
-          },
-          filename: {
-            type: String,
-            required: true,
-          },
-        },
-      ],
+      {
+          url: String,        // Cloudinary URL
+          filename: String    // Cloudinary File ID
+      }
+  ]
+
+
+    // images: [
+    //     {
+    //       url: {
+    //         type: String,
+    //         required: true,
+    //       },
+    //       filename: {
+    //         type: String,
+    //         required: true,
+    //       },
+    //     },
+    //   ],
 
 
  

@@ -16,10 +16,12 @@
   const session = require("express-session");
   const flash = require("connect-flash");
   const LocalStrategy = require("passport-local");
+  const {storage} = require("../cloudinary")
   const Client = require("../models/client");
   const multer = require("multer");
   
-  const upload = multer({ dest: "uploads/" });
+  // const upload = multer({ dest: "uploads/" });
+  const upload = multer({storage});
   const reelRoutes = require("../routes/reelRoutes");
   
   
@@ -195,12 +197,19 @@ mongoose.connect(MONGO_URI, {
   
     const { title, genre, year } = req.body;
     if (!title || !genre || !year) {
-      return res.status(400).send("Title, genre, and year are required.");
+      req.flash("error", "Title, genre, and year are required.");
+      return res.redirect("/reel/new");
+      // return res.status(400).send("Title, genre, and year are required.");
     }
   
     if (!req.files || req.files.length === 0) {
-      return res.status(400).send("No images uploaded.");
+      req.flash("error", "No images uploaded.");
+      return res.redirect("/reel/new");
+
+      // return res.status(400).send("No images uploaded.");
     }
+
+  
   
     const newReel = new Film({
       title,
