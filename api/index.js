@@ -50,9 +50,13 @@
   passport.deserializeUser(Client.deserializeUser());
 
 
+  // const MONGO_URI = process.env.VERCEL_ENV === 'production' 
+  //   ? process.env.MONGO_URI_PROD
+  //   : process.env.MONGO_URI_PROD;
+
   const MONGO_URI = process.env.VERCEL_ENV === 'production' 
     ? process.env.MONGO_URI_PROD
-    : process.env.MONGO_URI_PROD;
+    : process.env.MONGO_URI_DEV;
 
 
     
@@ -219,8 +223,6 @@ app.get("/", wrapAsync(async (req, res, next) => {
       // return res.status(400).send("No images uploaded.");
     }
 
-  
-  
     const newReel = new Film({
       title,
       genre,
