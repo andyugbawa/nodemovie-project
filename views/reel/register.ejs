@@ -41,6 +41,24 @@
         input{
             padding: 5px 8px 8px 40px;
         }
+        .reg-submit{
+            padding: 8px 20px 8px 20px;
+            border-radius: 15px; 
+        }
+        .content-log{
+            width: 80px;
+            height: 25px;
+            /* border: 1px solid blue; */
+            background:grey; 
+            border-radius: 15px;
+            text-align: center;
+            padding: 5px  5px 5px 7px;
+        }
+        .new-log{
+            color: white;
+            font-size: 19px;
+            font-weight: bolder;
+        }
 
     </style>
 </head>
@@ -73,7 +91,15 @@
 
                  </div>
              </div>
-             <button>Submit</button>
+             <button class="reg-submit">Submit</button>
+             <span class="registration">
+                <p>if you have an Account Login</p>
+                <div class="content-log">
+                    <a href="/login" class="new-log">login</a> 
+
+                </div>
+
+            </span>
          </form>
         </div>
 

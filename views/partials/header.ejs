@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+
+  <nav>
+    <% if (user) { %>
+      <div class="user-name">
+        <p>Welcome, <%= user.username %></p>
+
+      </div>
+      <!-- <form action="/logout" method="POST">
+        <button type="submit">Logout</button>
+      </form> --> 
+    <% } else { %>
+      <div class="content">
+        <div class="log">
+          <a href="/login" class="login">Login</a>
+  
+        </div>
+        <div class="reg">
+          <a href="/register" class="register">Register</a>
+  
+        </div>
+
+      </div>
+    <% } %>
+  </nav>
+  
+  
+</body>
+</html>
+
+
+ 
+  

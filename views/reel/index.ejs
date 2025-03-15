@@ -8,6 +8,8 @@
 </head>
 <body>
 
+   
+
 
 
     <nav class="nav-container">
@@ -15,11 +17,25 @@
             <h1>MOVIE</h1>
 
         </div>
+
+
+        
+
+
         <div class="reg-log">
-            <a href="/register">Register</a>
-            <form action="/logout" method="POST">
-                <button type="submit">logout</button>
-            </form>
+            <%- include('../partials/header') %>
+        
+            <% if (!currentUser) { %>  
+
+            <% } else { %>  
+                
+                <form action="/logout" method="POST">
+                    <button type="submit">Logout</button>
+                </form>
+            <% } %>
+        </div>
+        
+          
         </div>
         
     </nav>
@@ -60,7 +76,12 @@
            </div>
        </div>
 
-
+       <% if (error.length > 0) { %>
+        <div style="color: red; font-weight: bold;">
+            <%= error %>
+        </div>
+    <% } %>
+    
 
 
     <h1>ALL MOVIES</h1>
@@ -71,7 +92,14 @@
             <% } %>
     </ul> 
 
-    <a href="/reel/new">Request for Movies</a>
+    <!-- <a href="/reel/new">Request for Movies</a> -->
+
+    <% if (currentUser) { %>
+        <a href="/reel/new">Request for Movies</a>  
+    <% } else { %>
+        <a href="/login" onclick="alert('You must be logged in to request a movie. Redirecting to login...')">Request for Movies</a>  
+    <% } %>
+    
 
 
     <footer class="footer-container">

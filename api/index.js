@@ -7,11 +7,13 @@
   const mongoose = require("mongoose");
   const AppError = require("../utils/AppError");
   const wrapAsync = require("../utils/wrapAsync");
+  const router = express.Router();
+  // const { isLoggedIn } = require("./index");
   const { movieSchema } = require("../joiSchema");
   const Film = require("../models/box");
   const bcrypt = require("bcrypt");
   const methodOverride = require("method-override");
-  const User = require("../models/user");
+  // const User = require("../models/user");
   const passport = require("passport");
   const session = require("express-session");
   const flash = require("connect-flash");
@@ -78,6 +80,7 @@ mongoose.connect(MONGO_URI, {
 });
   
   app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.messages = req.flash("success");
     res.locals.error = req.flash("error");
     next();
@@ -97,6 +100,13 @@ mongoose.connect(MONGO_URI, {
     console.log("Session Data:", req.session);
     next();
   });
+
+
+  app.use((req, res, next) => {
+    res.locals.user = req.user; // Passport stores user in req.user
+    next();
+  });
+  
   
 
 
@@ -116,60 +126,24 @@ mongoose.connect(MONGO_URI, {
   
 
 
-
-  // ///////////////////////////////////////////////////////////////
-  // Former code
-  
-  
-  // const validateMovie = (req, res, next) => {
-  //   const { error } = movieSchema.validate(req.body.reel);
-  //   if (error) {
-  //     const msg = error.details.map((el) => el.message).join(",");
-  //     throw new AppError(msg, 400);
-  //   }
-  //   next();
-  // };
-
-
-
-
-  const userLogin = (req, res, next) => {
-    try {
-      if (!req.session.user_id) {
-        req.flash("error", "You must be logged in");
-        return res.redirect("/login");
-      }
-      next();
-    } catch (err) {
-      next(err);
+  function isLoggedIn(req, res, next) {
+    if (!req.isAuthenticated()) {  // ✅ Uses Passport.js authentication check
+        req.flash("error", "You must be logged in to access this page.");
+           return res.redirect("/login");
+        // return res.redirect("/show");
     }
-  };
+    next();
+}
+
+// Export the function
+module.exports = { isLoggedIn };
+
   
   
   
 
 
 
-  // //////////////////////////////////////////////////////////////
-  // Former code
-  
-  // const userLogin = (req, res, next) => {
-  //   if (!req.session.user_id) {
-  //     req.flash("error", "You must be logged in");
-  //     return res.redirect("/login");
-  //   }
-  //   next();
-  // };
-
-
-//   app.get("/", wrapAsync(async (req, res, next) => {
-//     try {
-//         const reels = await Film.find({});
-//         res.render("reel/index", { reels });
-//     } catch (err) {
-//         next(err);
-//     }
-// }));
 
 app.get("/", wrapAsync(async (req, res, next) => {
   try {
@@ -181,15 +155,12 @@ app.get("/", wrapAsync(async (req, res, next) => {
 }));
 
 
+router.get("/reel/new", isLoggedIn, (req, res) => {
+  res.render("reels/new");
+});
 
-// ////////////////////////////////////////
-// Former Code
+module.exports = router;
 
-
-//   app.get("/", wrapAsync(async (req, res) => {
-//     const reels = await Film.find({});
-//     res.render("reel/index", { reels });
-// }));
 
 
 
@@ -200,11 +171,35 @@ app.get("/", wrapAsync(async (req, res, next) => {
   app.get("/reel/new", (req, res) => {
     if (!req.isAuthenticated()) {
       req.flash("error", "You must be signed in");
-      return res.redirect("/login");
+      // return res.redirect("/login");
+       res.render("reel/new");
     }
     res.render("reel/new");
   });
   
+
+
+  app.get("/reel/:id", async (req, res) => {
+    try {
+      const reel = await Film.findById(req.params.id);
+      if (!reel) {
+        req.flash("error", "Film not found.");
+        return res.redirect("/reel");
+      }
+      res.render("reel/show", { reel });
+    } catch (error) {
+      console.error(error);
+      req.flash("error", "Error fetching film.");
+      res.redirect("/reel");
+    }
+  });
+  
+
+
+
+
+
+
   app.post("/reel", upload.array("image"), wrapAsync(async (req, res) => {
     console.log("Request Body:", req.body);
     console.log("Uploaded Files:", req.files);
@@ -213,30 +208,47 @@ app.get("/", wrapAsync(async (req, res, next) => {
     if (!title || !genre || !year) {
       req.flash("error", "Title, genre, and year are required.");
       return res.redirect("/reel/new");
-      // return res.status(400).send("Title, genre, and year are required.");
     }
   
     if (!req.files || req.files.length === 0) {
       req.flash("error", "No images uploaded.");
       return res.redirect("/reel/new");
-
-      // return res.status(400).send("No images uploaded.");
     }
-
-    const newReel = new Film({
-      title,
-      genre,
-      year,
-      images: req.files.map((file) => ({
-        url: file.path,
-        filename: file.filename,
-      })),
-    });
   
-    await newReel.save();
-    req.flash("success", "Successfully created a new Film");
-    res.redirect(`/reel/${newReel._id}`);
+    try {
+      const newReel = new Film({
+        title,
+        genre,
+        year,
+        images: req.files.map(file => ({
+          url: file.path,
+          filename: file.filename,
+        })),
+      });
+  
+      const savedReel = await newReel.save();
+      console.log("Saved Reel:", savedReel);
+  
+      if (!savedReel) {
+        req.flash("error", "Error saving film.");
+        return res.redirect("/reel/new");
+      }
+  
+      req.flash("success", "Successfully created a new Film");
+      res.redirect(`/reel/${savedReel._id}`);
+    } catch (error) {
+      console.error("Error saving film:", error);
+      req.flash("error", "An unexpected error occurred.");
+      res.redirect("/reel/new");
+    }
   }));
+  
+
+
+
+
+
+  
   
   app.get("/reel/:id/edit", wrapAsync(async (req, res) => {
     const { id } = req.params;
@@ -261,13 +273,32 @@ app.get("/", wrapAsync(async (req, res, next) => {
     res.render("reel/register");
   });
   
-  app.post("/register", wrapAsync(async (req, res) => {
-    const { username, email, password } = req.body;
-    const client = new Client({ username, email });
-    await Client.register(client, password);
-    req.flash("success", "User registered successfully!");
-    res.redirect("/login");
-  }));
+
+
+app.post("/register", wrapAsync(async (req, res, next) => {
+  try {
+      const { username, email, password } = req.body;
+      const client = new Client({ username, email });
+      const registeredUser = await Client.register(client, password);
+
+      if (!registeredUser) {
+          req.flash("error", "Registration failed! Please try again.");
+          return res.redirect("/register");
+      }
+
+      // ✅ Log in the user automatically after registration
+      req.login(registeredUser, (err) => {
+          if (err) return next(err);
+          req.flash("success", `Welcome, ${registeredUser.username}`);
+          return res.redirect("/");
+      });
+
+  } catch (err) {
+      next(err); // Handle errors properly
+  }
+}));
+
+
 
 
 
@@ -276,36 +307,61 @@ app.get("/", wrapAsync(async (req, res, next) => {
   app.get("/login", (req, res) => {
     res.render("reel/login");
   });
-  
 
 
 
-  app.post("/login", passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }), (req, res) => {
-    req.flash("success", "Welcome!");
-    res.redirect("/");
-  });
+
+app.post("/login", (req, res, next) => {
+  const { username } = req.body;
+
+  // Check if the user exists in the database
+  Client.findOne({ username }).then(existingUser => {
+      if (!existingUser) {
+          req.flash("error", "User not found! Please register first.");
+          return res.redirect("/register"); // Redirect to register if the user doesn't exist
+      }
+
+      // Authenticate user using Passport.js
+      passport.authenticate("local", (err, user, info) => {
+          if (err) return next(err);
+          if (!user) {
+              req.flash("error", "Invalid username or password!");
+              return res.redirect("/login");
+          }
+
+          req.logIn(user, (err) => {
+              if (err) return next(err);
+              
+              req.flash("success", ` ${user.username}!`); // ✅ Flash success message with username
+              return res.redirect("/");
+          });
+      })(req, res, next);
+  }).catch(err => next(err));
+});
+
   
   app.post("/logout", (req, res) => {
     req.session.destroy();
-    res.redirect("/login");
+    res.redirect("/");
   });
   
-  app.get("/secret", userLogin, (req, res) => {
+  app.get("/secret", isLoggedIn, (req, res) => {
     res.redirect("/reel");
   });
-  
-  app.get("/reel/:id", wrapAsync(async (req, res) => {
+
+
+  app.get("/reel/:id", isLoggedIn, wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const reel = await Film.findById(id);
+  
     if (!reel) {
-      throw new AppError("Film not found", 404);
+      return next(new AppError("Film not found", 404));  // Handle error properly
     }
-    res.render("reel/show", { reel });
+  
+    res.render("reel/show", { reel, user: req.user });  // ✅ Pass user info
   }));
-
+  
+  
 
 
 

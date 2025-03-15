@@ -37,6 +37,42 @@
             padding: 5px 8px 8px 40px;
         }
 
+        .control-btn{
+            display: flex;
+            gap: 60px;
+        }
+        .home{
+            width: 85px;
+            height: 25px;
+            /* border: 1px solid blue; */
+            padding: 5px  5px 5px 7px;
+            background: red;
+            border-radius: 15px;
+        }
+        .page{
+            color: white;
+            font-size: 17px;
+            font-weight: 100;
+        }
+        .reg-btn{
+            width: 80px;
+            height: 25px;
+            /* border: 1px solid blue; */
+            background:grey; 
+            border-radius: 15px;
+            text-align: center;
+            padding: 5px  5px 5px 7px;
+        }
+        .new{
+            color: white;
+            font-size: 19px;
+            font-weight: bolder;
+        }
+        .submit-btn{
+            padding: 8px 20px 8px 20px;
+            border-radius: 15px;
+        }
+
     </style>
 </head>
 <body>
@@ -67,7 +103,27 @@
 
                  </div>
              </div>
-             <button>Submit</button>
+
+             <div class="control-btn">
+                <button class="submit-btn">Submit</button>
+                <div class="home">
+                    <a href="/" class="page">Home Page</a>
+                </div>
+            </div>
+
+
+            
+             <span class="registration">
+                 <p>if you do not have an Account Register</p>
+                 <div class="reg-btn">
+                     <a href="/register" class="new">Register</a> 
+
+                 </div>
+
+             </span>
+
+
+           
          </form>
         </div>
 
