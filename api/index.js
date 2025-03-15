@@ -67,8 +67,7 @@ if (!MONGO_URI) {
   
 mongoose.connect(MONGO_URI, {
   dbName: "filmState",
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+
 })
 .then(() => console.log("✅ Connected to MongoDB successfully!"))
 .catch(err => {
@@ -156,7 +155,7 @@ router.get("/reel/new", isLoggedIn, (req, res) => {
   res.render("reels/new");
 });
 
-module.exports = router;
+// module.exports = router;
 
 
 
